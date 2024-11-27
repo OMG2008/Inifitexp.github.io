@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Video Games Hub</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>Ultimate Video Games Hub</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#games">Games</a></li>
+                <li><a href="#news">News</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="home">
+        <h2>Welcome to the Ultimate Video Games Hub!</h2>
+        <p>Your source for the latest news, reviews, and releases in the world of video games. Explore top games, stay updated with the latest news, and get in touch with the community!</p>
+        <div class="featured-games">
+            <div class="game-item">
+                <img src="https://via.placeholder.com/300" alt="Game 1">
+                <h3>Game 1</h3>
+                <p>A brief description of this exciting game.</p>
+            </div>
+            <div class="game-item">
+                <img src="https://via.placeholder.com/300" alt="Game 2">
+                <h3>Game 2</h3>
+                <p>Another exciting game you should try out!</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="games">
+        <h2>Our Games Collection</h2>
+        <div class="games-container">
+            <div class="game-card">
+                <img src="https://via.placeholder.com/300" alt="Game 1">
+                <h3>Super Adventure</h3>
+                <p>An epic adventure in a fantasy world.</p>
+                <button onclick="showGameDetails('Super Adventure')">Learn More</button>
+            </div>
+            <div class="game-card">
+                <img src="https://via.placeholder.com/300" alt="Game 2">
+                <h3>Speed Racer</h3>
+                <p>Race against time in high-speed challenges.</p>
+                <button onclick="showGameDetails('Speed Racer')">Learn More</button>
+            </div>
+            <div class="game-card">
+                <img src="https://via.placeholder.com/300" alt="Game 3">
+                <h3>Battle Arena</h3>
+                <p>Fight in intense multiplayer battles.</p>
+                <button onclick="showGameDetails('Battle Arena')">Learn More</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="news">
+        <h2>Latest News</h2>
+        <div class="news-item">
+            <h3>Upcoming Game Releases</h3>
+            <p>Get ready for the most anticipated games of the year!</p>
+        </div>
+        <div class="news-item">
+            <h3>Gaming Event Highlights</h3>
+            <p>Check out the highlights from the latest gaming event.</p>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2>Contact Us</h2>
+        <form id="contactForm">
+            <input type="text" placeholder="Your Name" id="name" required>
+            <input type="email" placeholder="Your Email" id="email" required>
+            <textarea placeholder="Your Message" id="message" required></textarea>
+            <button type="submit">Send Message</button>
+        </form>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Ultimate Video Games Hub. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
