@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Board Game Ideas Wall</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f1222; --panel:#161a2f; --muted:#9aa3b2; --text:#eef2ff; --accent:#7c5cff; --accent-2:#22d3ee; --ok:#10b981; --warn:#f59e0b; --bad:#ef4444;
+      --ring: 0 0 0 3px rgba(124,92,255,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(1200px 800px at 10% -10%, #1b1f3a, transparent 60%),radial-gradient(900px 600px at 110% 10%, #0d2438, transparent 60%), var(--bg); color:var(--text)}
+    .wrap{max-width:1100px;margin:0 auto;padding:24px}
+    header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .title{display:flex;align-items:center;gap:12px}
+    .title .logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;box-shadow:0 10px 25px rgba(124,92,255,.35)}
+    .title h1{font-size:1.35rem;margin:0}
+    .muted{color:var(--muted)}
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0)); border:1px solid rgba(255,255,255,.08); box-shadow:0 10px 30px rgba(0,0,0,.35); border-radius:16px}
+
+    .grid{display:grid;gap:16px}
+    @media(min-width:900px){
+        .grid{grid-template-columns: 380px 1fr}
+    }
+    form{padding:18px}
+    label{display:block;font-weight:600;margin:12px 0 6px}
+    input[type="text"], textarea, select, input[type="number"]{
+      width:100%; padding:12px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.12); background:#0e1225; color:var(--text);
+      outline:none; transition:.2s border,.2s box-shadow
+    }
+    input:focus, textarea:focus, select:focus{border-color:var(--accent); box-shadow:var(--ring)}
+    textarea{min-height:92px; resize:vertical}
+    .row{display:flex; gap:12px}
+    .row > *{flex:1}
+    .actions{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:14px}
+    button{appearance:none; border:0; border-radius:12px; padding:10px 14px; font-weight:700; cursor:pointer; transition:transform .07s ease, box-shadow .2s}
+    button:active{transform:translateY(1px)}
+    .btn-primary{background:linear-gradient(135deg,var(--accent),#5a3dff); color:white; box-shadow:0 10px 20px rgba(124,92,255,.35)}
+    .btn-secondary{background:#0e1225; color:var(--text); border:1px solid rgba(255,255,255,.12)}
+    .btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626); color:white}
+    .btn-ok{background:linear-gradient(135deg,#10b981,#059669); color:white}
+
+    .toolbar{padding:14px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; border-top:1px solid rgba(255,255,255,.06); background:rgba(0,0,0,.15); border-radius:0 0 16px 16px}
+    .toolbar input[type="search"]{flex:1; min-width:180px}
+
+    .list{padding:16px}
+    .empty{padding:26px; text-align:center; color:var(--muted)}
+
+    .card{background:#0e1225; border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:14px; display:grid; gap:10px}
+    .card h3{margin:0; font-size:1.05rem}
+    .meta{display:flex; gap:10px; flex-wrap:wrap; font-size:.9rem; color:var(--muted)}
+    .tag{padding:4px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.1)}
+    .votes{display:flex; gap:8px; align-items:center}
+    .icon-btn{border:1px solid rgba(255,255,255,.1); background:transparent; padding:6px 10px; border-radius:10px}
+    .icon-btn[disabled]{opacity:.5; cursor:not-allowed}
+
+    .pill{border-radius:999px; padding:4px 10px; border:1px dashed rgba(255,255,255,.2)}
+    .footer-note{font-size:.9rem; color:var(--muted); margin-top:8px}
+    .notice{font-size:.9rem; color:var(--muted)}
+    .small{font-size:.85rem}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <div class="logo" aria-hidden="true">🎲</div>
+        <div>
+          <h1>Board Game Ideas Wall</h1>
+          <div class="muted small">Share, upvote, and organise new game concepts for the club.</div>
+        </div>
+      </div>
+      <div class="muted small">Data is stored in your browser (localStorage). Use Export/Import to share.</div>
+    </header>
+
+    <div class="grid">
+      <!-- Submit panel -->
+      <section class="panel" aria-labelledby="submitTitle">
+        <form id="ideaForm">
+          <h2 id="submitTitle" style="margin:0 0 6px">Add a new idea</h2>
+          <div class="notice">Fields marked * are required.</div>
+
+          <label for="title">Game title *</label>
+          <input id="title" name="title" type="text" required maxlength="80" placeholder="e.g., Dungeon Delvers: Pocket Edition" />
+
+          <label for="pitch">Short pitch *</label>
+          <textarea id="pitch" name="pitch" required maxlength="240" placeholder="Give us the 1–2 sentence hook…"></textarea>
+
+          <div class="row">
+            <div>
+              <label for="category">Category</label>
+              <select id="category" name="category">
+                <option>Strategy</option>
+                <option>Party</option>
+                <option>Co-op</option>
+                <option>Trivia</option>
+                <option>Card</option>
+                <option>Abstract</option>
+                <option>Dexterity</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div>
+              <label for="complexity">Complexity (1–5)</label>
+              <input id="complexity" name="complexity" type="number" min="1" max="5" value="2" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label for="players">Players</label>
+              <input id="players" name="players" type="text" placeholder="e.g., 2–6" />
+            </div>
+            <div>
+              <label for="submitter">Your name</label>
+              <input id="submitter" name="submitter" type="text" placeholder="Optional" />
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn-primary" type="submit">+ Add Idea</button>
+            <button class="btn-secondary" type="button" id="resetFormBtn">Clear</button>
+          </div>
+          <div class="footer-note">Tip: Keep pitches short and punchy. Edit later anytime.</div>
+        </form>
+        <div class="toolbar">
+          <input id="search" type="search" placeholder="Search title, pitch, submitter…" />
+          <select id="filterCategory" title="Filter by category">
+            <option value="">All categories</option>
+            <option>Strategy</option>
+            <option>Party</option>
+            <option>Co-op</option>
+            <option>Trivia</option>
+            <option>Card</option>
+            <option>Abstract</option>
+            <option>Dexterity</option>
+            <option>Other</option>
+          </select>
+          <select id="sortBy" title="Sort order">
+            <option value="hot">Sort: Hot (votes & recent)</option>
+            <option value="new">Sort: Newest</option>
+            <option value="top">Sort: Top (votes)</option>
+            <option value="alpha">Sort: A→Z</option>
+          </select>
+          <button class="icon-btn" id="exportBtn" title="Export ideas to a file">Export</button>
+          <label class="icon-btn" for="importFile" style="cursor:pointer">Import</label>
+          <input id="importFile" type="file" accept="application/json" hidden>
+          <button class="icon-btn" id="clearAllBtn" title="Delete all ideas">Clear all</button>
+        </div>
+      </section>
+
+      <!-- Ideas list -->
+      <section class="panel" aria-labelledby="ideasTitle">
+        <div class="list" id="ideasList">
+          <div class="empty">No ideas yet. Be the first to add one! 🎉</div>
+        </div>
+      </section>
+    </div>
+
+    <p class="footer-note" style="margin-top:16px">Want a shared backend later (Google Sheet / Firebase) so everyone sees the same list? This file is ready—just swap the storage adapter in the code.</p>
+  </div>
+
+  <script>
+    /** Simple storage adapter using localStorage. Swap with a backend later if needed. */
+    const Storage = {
+      key: 'boardgame_ideas.v1',
+      load(){
+        try{ return JSON.parse(localStorage.getItem(this.key)||'[]') }catch{ return [] }
+      },
+      save(items){ localStorage.setItem(this.key, JSON.stringify(items)) }
+    }
+
+    /** Util */
+    const uid = () => Math.random().toString(36).slice(2) + Date.now().toString(36)
+    const now = () => new Date().toISOString()
+
+    /** State */
+    let ideas = Storage.load()
+    let query = ''
+
+    /** Elements */
+    const form = document.getElementById('ideaForm')
+    const ideasList = document.getElementById('ideasList')
+    const search = document.getElementById('search')
+    const filterCategory = document.getElementById('filterCategory')
+    const sortBy = document.getElementById('sortBy')
+
+    /** Form handlers */
+    form.addEventListener('submit', e => {
+      e.preventDefault()
+      const fd = new FormData(form)
+      const title = (fd.get('title')||'').toString().trim()
+      const pitch = (fd.get('pitch')||'').toString().trim()
+      if(!title || !pitch){ alert('Please fill in the required fields.'); return }
+      const item = {
+        id: uid(),
+        title,
+        pitch,
+        category: (fd.get('category')||'Other').toString(),
+        complexity: Math.max(1, Math.min(5, parseInt(fd.get('complexity')||'2',10)) ),
+        players: (fd.get('players')||'').toString().trim(),
+        submitter: (fd.get('submitter')||'').toString().trim(),
+        votes: 0,
+        createdAt: now(),
+        updatedAt: now()
+      }
+      ideas.unshift(item)
+      Storage.save(ideas)
+      form.reset()
+      render()
+    })
+
+    document.getElementById('resetFormBtn').addEventListener('click', ()=> form.reset())
+
+    /** Toolbar */
+    search.addEventListener('input', e => { query = e.target.value.toLowerCase(); render() })
+    filterCategory.addEventListener('change', render)
+    sortBy.addEventListener('change', render)
+
+    document.getElementById('exportBtn').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(ideas,null,2)], {type:'application/json'})
+      const a = document.createElement('a')
+      a.href = URL.createObjectURL(blob)
+      a.download = `board-game-ideas-${new Date().toISOString().slice(0,10)}.json`
+      a.click()
+      setTimeout(()=>URL.revokeObjectURL(a.href), 2000)
+    })
+
+    document.getElementById('importFile').addEventListener('change', async (e) => {
+      const file = e.target.files[0]; if(!file) return
+      try{
+        const text = await file.text()
+        const data = JSON.parse(text)
+        if(!Array.isArray(data)) throw new Error('Invalid file')
+        // Merge by id; new ones first
+        const existing = new Map(ideas.map(i=>[i.id,i]))
+        for(const item of data){ if(item && item.id && !existing.has(item.id)) ideas.push(item) }
+        Storage.save(ideas)
+        render()
+      }catch(err){ alert('Could not import file. Make sure it\'s a valid JSON export.') }
+      e.target.value = ''
+    })
+
+    document.getElementById('clearAllBtn').addEventListener('click', () => {
+      if(confirm('Delete ALL ideas from this browser? This cannot be undone.')){
+        ideas = []
+        Storage.save(ideas)
+        render()
+      }
+    })
+
+    /** Render */
+    function render(){
+      const cat = filterCategory.value
+      const q = query
+      let filtered = ideas.filter(i => (
+        (!cat || i.category === cat) && (
+          !q || i.title.toLowerCase().includes(q) || i.pitch.toLowerCase().includes(q) || (i.submitter||'').toLowerCase().includes(q)
+        )
+      ))
+
+      // Sorting
+      const sort = sortBy.value
+      if(sort === 'new') filtered.sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt))
+      else if(sort === 'top') filtered.sort((a,b)=> b.votes - a.votes || new Date(b.createdAt)-new Date(a.createdAt))
+      else if(sort === 'alpha') filtered.sort((a,b)=> a.title.localeCompare(b.title))
+      else if(sort === 'hot'){
+        // simple hot score = votes*2 + recency bonus (last 72h)
+        const ageHrs = (d)=> (Date.now()-new Date(d))/36e5
+        const score = (i)=> (i.votes*2) + Math.max(0, 3 - ageHrs(i.createdAt)/24)
+        filtered.sort((a,b)=> score(b)-score(a))
+      }
+
+      if(!filtered.length){ ideasList.innerHTML = '<div class="empty">No matching ideas. Try different filters.</div>'; return }
+
+      ideasList.innerHTML = filtered.map(cardHTML).join('')
+
+      // attach handlers
+      ideasList.querySelectorAll('[data-action]').forEach(btn=>{
+        btn.addEventListener('click', handleAction)
+      })
+
+      // enable in-place editing (contenteditable)
+      ideasList.querySelectorAll('[contenteditable]')?.forEach(el => {
+        el.addEventListener('blur', (e)=>{
+          const id = e.target.closest('.card').dataset.id
+          const field = e.target.dataset.field
+          const idea = ideas.find(x=>x.id===id)
+          if(!idea) return
+          let val = e.target.innerText.trim()
+          if(field==='complexity'){ val = String(Math.max(1, Math.min(5, parseInt(val||'2',10)))) }
+          idea[field] = val
+          idea.updatedAt = now()
+          Storage.save(ideas)
+          render()
+        })
+      })
+    }
+
+    function cardHTML(i){
+      const stars = '★★★★★'.slice(0, i.complexity||1)
+      const players = i.players ? `<span class="pill" title="Players">👥 ${escapeHTML(i.players)}</span>` : ''
+      const by = i.submitter ? `<span class="pill" title="Submitted by">✍️ ${escapeHTML(i.submitter)}</span>` : ''
+      const when = new Date(i.createdAt).toLocaleString()
+      return `
+        <article class="card" data-id="${i.id}">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:8px">
+            <h3 contenteditable data-field="title" title="Click to edit title">${escapeHTML(i.title)}</h3>
+            <div class="votes" title="Upvotes">
+              <button class="icon-btn" data-action="up" aria-label="Upvote">⬆️</button>
+              <strong>${i.votes}</strong>
+            </div>
+          </div>
+          <div class="meta">
+            <span class="tag">${escapeHTML(i.category)}</span>
+            <span class="tag" title="Complexity 1–5">⭐ ${stars}</span>
+            ${players}
+            ${by}
+            <span class="muted">• Added ${when}</span>
+          </div>
+          <div contenteditable data-field="pitch" title="Click to edit pitch">${escapeHTML(i.pinch || i.pitch)}</div>
+          <div class="actions">
+            <button class="btn-secondary" data-action="editComplexity" title="Edit complexity">Edit complexity</button>
+            <button class="btn-secondary" data-action="editPlayers" title="Edit players">Edit players</button>
+            <button class="btn-secondary" data-action="editCategory" title="Edit category">Edit category</button>
+            <button class="btn-danger" data-action="delete" title="Delete idea">Delete</button>
+          </div>
+        </article>
+      `
+    }
+
+    function handleAction(e){
+      const btn = e.currentTarget
+      const id = btn.closest('.card').dataset.id
+      const idea = ideas.find(x=>x.id===id)
+      if(!idea) return
+      const save = () => { idea.updatedAt = now(); Storage.save(ideas); render() }
+
+      switch(btn.dataset.action){
+        case 'up': idea.votes++; save(); break
+        case 'delete':
+          if(confirm('Delete this idea?')){
+            ideas = ideas.filter(x=>x.id!==id); Storage.save(ideas); render()
+          }
+          break
+        case 'editPlayers':{
+          const newVal = prompt('Player count (e.g., 2–6):', idea.players || '')
+          if(newVal!==null){ idea.players = newVal.trim(); save() }
+          break
+        }
+        case 'editCategory':{
+          const newVal = prompt('Category (Strategy, Party, Co-op, Trivia, Card, Abstract, Dexterity, Other):', idea.category || 'Other')
+          if(newVal!==null){ idea.category = (newVal||'Other').trim() || 'Other'; save() }
+          break
+        }
+        case 'editComplexity':{
+          const n = parseInt(prompt('Complexity 1–5:', idea.complexity||2), 10)
+          if(!isNaN(n)){ idea.complexity = Math.max(1, Math.min(5, n)); save() }
+          break
+        }
+      }
+    }
+
+    function escapeHTML(s){
+      return (s||'').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]))
+    }
+
+    // Seed example ideas on first load
+    if(ideas.length === 0){
+      ideas = [
+        {id:uid(), title:'Bluff & Brew', pitch:'Party game where players run a fantasy tavern and bluff about their secret menu to steal customers.', category:'Party', complexity:1, players:'3–8', submitter:'O.G.', votes:3, createdAt: now(), updatedAt: now()},
+        {id:uid(), title:'Orbital Relay', pitch:'Co-op puzzle about routing signals between satellites before solar storms hit.', category:'Co-op', complexity:3, players:'1–4', submitter:'Ruben', votes:5, createdAt: now(), updatedAt: now()},
+        {id:uid(), title:'Kingmaker: Micro', pitch:'10-minute strategy duel with simultaneous orders and hidden objectives.', category:'Strategy', complexity:4, players:'2', submitter:'Nicole', votes:2, createdAt: now(), updatedAt: now()}
+      ]
+      Storage.save(ideas)
+    }
+
+    render()
+  </script>
+</body>
+</html>
